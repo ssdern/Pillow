@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pillow: verified homes in Lagos and Abuja</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5FAF6;--surf:#FFFFFF;--ink:#10241A;--mute:#52665A;--line:#DCE8DF;--teal:#1E7B4A;--yel:#1E7B4A;--yelink:#FFFFFF;--ok:#1E7B4A;--bad:#B3402A;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0D1A13;--surf:#14271D;--ink:#EAF4EE;--mute:#9BB5A5;--line:#25402F;--teal:#5FD08E;--yel:#3FBF78;--yelink:#07140D;--ok:#5FD08E;--bad:#F08A72;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0D1A13;--surf:#14271D;--ink:#EAF4EE;--mute:#9BB5A5;--line:#25402F;--teal:#5FD08E;--yel:#3FBF78;--yelink:#07140D;--ok:#5FD08E;--bad:#F08A72;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 'DM Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Bricolage Grotesque','DM Sans',sans-serif;line-height:1.1;margin:0}
+a{color:inherit}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--surf);z-index:10}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surf);border-bottom:1px solid var(--line)}
+.bar{max-width:1080px;margin:auto;padding:12px 18px;display:flex;align-items:center;gap:18px}
+.logo{font:800 24px 'Bricolage Grotesque',sans-serif;text-decoration:none;display:flex;align-items:center;gap:8px}
+.logo i{width:22px;height:22px;background:var(--yel);border-radius:4px;box-shadow:inset 0 -7px 0 var(--yelink)}
+nav{display:flex;gap:16px;margin-left:auto;align-items:center}
+nav a{text-decoration:none;font-weight:500}
+.btn{background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:11px 18px;font:700 15px 'DM Sans',sans-serif;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.y{background:var(--yel);color:var(--yelink)}
+.btn.o{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+main{max-width:1080px;margin:auto;padding:0 18px 56px}
+.hero{padding:44px 0 28px}
+.hero h1{font-size:clamp(34px,7vw,60px);font-weight:800;max-width:15em}
+.hero p{color:var(--mute);max-width:34em;font-size:18px;margin:14px 0 24px}
+.search{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));align-items:end}
+label{font-size:13px;color:var(--mute);display:block;margin-bottom:4px}
+select,input{width:100%;padding:11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:16px 'DM Sans',sans-serif}
+.checks{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:30px 0 10px}
+.checks div{border-left:4px solid var(--yel);padding:2px 0 2px 14px}
+.checks b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-size:19px}
+.checks span{color:var(--mute);font-size:15px}
+h2{font-size:28px;margin:34px 0 14px}
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:12px;overflow:hidden;text-decoration:none;display:block}
+.ph{height:130px;display:flex;align-items:flex-end;padding:12px;font:800 26px 'Bricolage Grotesque',sans-serif;color:#fff;position:relative}
+.ph.big{height:220px;font-size:40px;border-radius:12px}
+.stamp{position:absolute;top:10px;right:10px;background:var(--yel);color:var(--yelink);font:700 13px 'DM Sans',sans-serif;padding:4px 9px;border-radius:4px;border:2px solid var(--yelink)}
+.card .in{padding:12px 14px 14px}
+.price{font:800 22px 'Bricolage Grotesque',sans-serif}
+.price small{font:400 14px 'DM Sans',sans-serif;color:var(--mute)}
+.meta{color:var(--mute);font-size:15px}
+.tog{display:inline-flex;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden}
+.tog button{border:0;background:transparent;color:var(--ink);padding:10px 18px;font:700 15px 'DM Sans',sans-serif;cursor:pointer}
+.tog button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.two{display:grid;gap:26px;grid-template-columns:1fr;margin-top:18px}
+@media(min-width:860px){.two{grid-template-columns:1.5fr 1fr}}
+.panel{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:18px}
+.panel h3{font-size:20px;margin-bottom:12px}
+.row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0;font-weight:700}
+.sc{margin:11px 0}
+.sc .t{display:flex;justify-content:space-between;font-size:15px}
+.trk{height:9px;background:var(--line);border-radius:5px;margin-top:4px;overflow:hidden}
+.trk i{display:block;height:100%;background:var(--teal)}
+.ok{color:var(--ok);font-weight:700}.wait{color:var(--bad);font-weight:700}
+.msg{margin-top:12px;padding:10px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--line);font-size:15px}
+.note{color:var(--mute);font-size:14px;margin-top:10px}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:8px;font-size:15px;display:none;z-index:20;max-width:90vw}
+.empty{padding:30px;text-align:center;color:var(--mute)}
+textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:16px 'DM Sans',sans-serif;resize:vertical}
+.fgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.drop{display:block;border:2px dashed var(--teal);border-radius:12px;padding:28px 16px;text-align:center;background:var(--bg);cursor:pointer}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:12px}
+.thumbs div{position:relative;aspect-ratio:4/3;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.thumbs button{position:absolute;bottom:4px;right:4px;border:0;border-radius:6px;background:var(--ink);color:var(--bg);padding:3px 8px;cursor:pointer;font-size:13px}
+.thumbs .cv{position:absolute;top:4px;left:4px;background:var(--yel);color:var(--yelink);font-size:12px;font-weight:700;padding:2px 7px;border-radius:4px}
+.bar{flex-wrap:wrap;row-gap:8px}
+.authbox{max-width:420px;margin:36px auto 0;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:20px}
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));margin:16px 0}
+.stats div{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:14px;color:var(--mute)}
+.stats b{display:block;font:800 28px 'Bricolage Grotesque',sans-serif;color:var(--ink)}
+.lr{display:grid;gap:10px;grid-template-columns:1fr;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+@media(min-width:760px){.lr{grid-template-columns:1.6fr 1fr auto;align-items:center}}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700;border:1.5px solid currentColor;color:var(--mute)}
+.badge.live{color:var(--ok)}.badge.changes{color:var(--bad)}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.btn.s{padding:8px 12px;font-size:14px}
+.av{width:56px;height:56px;border-radius:50%;background:var(--yel);color:var(--yelink);display:flex;align-items:center;justify-content:center;font:800 20px 'Bricolage Grotesque',sans-serif;flex:none}
+.av.big{width:84px;height:84px;font-size:30px}
+.acard{display:flex;gap:14px;align-items:center;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:16px;text-decoration:none}
+.ahead{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.rev{border-bottom:1px solid var(--line);padding:12px 0}.rev:last-child{border:0}
+.cb{display:flex;gap:10px;align-items:flex-start;margin:7px 0;color:var(--ink);font-size:15px}
+.cb input{width:20px;height:20px;padding:0;margin:2px 0 0;flex:none}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.acts select{min-width:200px}
+@media(min-width:760px){.lr.adm{grid-template-columns:1.2fr 1.4fr auto;align-items:start}}
+@media(prefers-reduced-motion:no-preference){.hero h1{animation:up .5s ease-out}@keyframes up{from{opacity:0;transform:translateY(10px)}}}
+.ph{text-shadow:0 1px 6px rgba(0,0,0,.55)}
+nav a[href="#/agents"]{display:none}
+</style>
+</head>
+<body>
+<header><div class="bar">
+<a class="logo" href="#/"><i></i>Pillow</a>
+<nav><a href="#/search?mode=rent">Rent</a><a href="#/search?mode=sale">Buy</a><a href="#/agents">Agents</a><a href="#/signin" id="acct">Sign in</a><button class="btn y" id="listBtn">List a property</button></nav>
+</div></header>
+<main id="app"></main>
+<footer style="max-width:1080px;margin:auto;padding:0 18px 36px"><a class="meta" href="#/admin">Team admin</a></footer>
+<div id="toast" role="status"></div>
+<script>
+var L=[
+{id:1,mode:'rent',city:'Lagos',area:'Yaba',t:'2 bedroom flat',p:3500000,bed:2,bath:2,c:'#1E7B4A',s:[16,3,2,4,35]},
+{id:2,mode:'rent',city:'Lagos',area:'Lekki Phase 1',t:'3 bedroom apartment',p:9000000,bed:3,bath:3,c:'#2F8F5B',s:[20,4,3,4,50]},
+{id:3,mode:'rent',city:'Lagos',area:'Ikeja GRA',t:'3 bedroom flat',p:6000000,bed:3,bath:3,c:'#176B45',s:[18,4,4,5,40]},
+{id:4,mode:'sale',city:'Lagos',area:'Lekki',t:'4 bedroom duplex',p:185000000,bed:4,bath:5,c:'#3A8A63',s:[22,4,3,4,55],d:['ok','ok','ok']},
+{id:5,mode:'rent',city:'Abuja',area:'Wuse 2',t:'2 bedroom flat',p:5000000,bed:2,bath:2,c:'#14603B',s:[18,4,4,4,20]},
+{id:6,mode:'rent',city:'Abuja',area:'Gwarinpa',t:'3 bedroom flat',p:4500000,bed:3,bath:3,c:'#2A7A55',s:[14,3,4,3,45]},
+{id:7,mode:'sale',city:'Abuja',area:'Jabi',t:'3 bedroom terrace',p:120000000,bed:3,bath:4,c:'#3F8A5F',s:[20,4,4,4,25],d:['ok','ok','wait']},
+{id:8,mode:'sale',city:'Abuja',area:'Gwarinpa',t:'4 bedroom detached house',p:95000000,bed:4,bath:4,c:'#1F6B50',s:[14,3,4,3,45],d:['ok','wait','ok']}];
+var N=function(n){return '\u20A6'+n.toLocaleString('en-NG')};
+var app=document.getElementById('app');
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(function(){t.style.display='none'},3200)}
+document.getElementById('listBtn').onclick=function(){location.hash='#/list'};
+function card(x){return '<a class="card" href="#/listing/'+x.id+'"><div class="ph" style="background:'+x.c+'">'+x.area+'<span class="stamp">Verified</span></div><div class="in"><div class="price">'+N(x.p)+(x.mode=='rent'?' <small>per year</small>':'')+'</div><div>'+x.t+'</div><div class="meta">'+x.bed+' bed, '+x.bath+' bath, '+x.area+', '+x.city+'</div></div></a>'}
+function home(){
+app.innerHTML='<section class="hero"><h1>Homes in Lagos and Abuja, checked before you visit.</h1><p>Every listing is inspected in person. You see the real move-in cost and how the area actually lives, including power, water and flooding.</p>'+form('rent')+'</section>'+
+'<div class="checks"><div><b>Landlord and documents checked</b><span>We confirm who owns it and what papers exist.</span></div><div><b>Full move-in cost shown</b><span>Rent, agent fee, legal fee and caution deposit in one total.</span></div><div><b>Area scores from real data</b><span>Power hours, water, flood safety, security and rush-hour commute.</span></div></div>'+
+'<h2>Newly verified</h2><div class="grid">'+L.slice(0,4).map(card).join('')+'</div>';
+bindForm()}
+function form(m,c,b,mx){return '<div class="search"><div><label>I want to</label><select id="fm"><option value="rent"'+(m=='rent'?' selected':'')+'>Rent</option><option value="sale"'+(m=='sale'?' selected':'')+'>Buy</option></select></div><div><label>City</label><select id="fc"><option value="">Lagos and Abuja</option><option'+(c=='Lagos'?' selected':'')+'>Lagos</option><option'+(c=='Abuja'?' selected':'')+'>Abuja</option></select></div><div><label>Bedrooms</label><select id="fb"><option value="0">Any</option><option value="2"'+(b==2?' selected':'')+'>2 or more</option><option value="3"'+(b==3?' selected':'')+'>3 or more</option><option value="4"'+(b==4?' selected':'')+'>4 or more</option></select></div><div><label>Max price (\u20A6)</label><input id="fx" type="number" inputmode="numeric" placeholder="No limit" value="'+(mx||'')+'"></div><button class="btn y" id="fgo">Search homes</button></div>'}
+function bindForm(){document.getElementById('fgo').onclick=function(){location.hash='#/search?mode='+fm.value+'&city='+fc.value+'&bed='+fb.value+'&max='+fx.value}}
+function params(){var o={},q=(location.hash.split('?')[1]||'').split('&');q.forEach(function(p){var k=p.split('=');if(k[0])o[k[0]]=decodeURIComponent(k[1]||'')});return o}
+function search(){
+var o=params(),m=o.mode||'rent',r=L.filter(function(x){return x.mode==m&&(!o.city||x.city==o.city)&&x.bed>=(+o.bed||0)&&(!o.max||x.p<=+o.max)});
+app.innerHTML='<h2>'+(m=='rent'?'Homes to rent':'Homes for sale')+(o.city?' in '+o.city:' in Lagos and Abuja')+'</h2>'+form(m,o.city,+o.bed,o.max)+'<p class="meta">'+r.length+' verified '+(r.length==1?'home':'homes')+'</p>'+(r.length?'<div class="grid">'+r.map(card).join('')+'</div>':'<div class="empty">No homes match. Raise the price limit or choose both cities.</div>');
+bindForm()}
+var SN=['Power supply','Water supply','Flood safety','Security'];
+function detail(id){
+var x=L.filter(function(y){return y.id==id})[0];if(!x){location.hash='#/';return}
+var s=x.s,rent=x.mode=='rent',side;
+if(rent){var a=x.p*.1;side='<h3>Move-in cost</h3><div class="row"><span>First year rent</span><span>'+N(x.p)+'</span></div><div class="row"><span>Agent fee</span><span>'+N(a)+'</span></div><div class="row"><span>Legal fee</span><span>'+N(a)+'</span></div><div class="row"><span>Caution deposit</span><span>'+N(a)+'</span></div><div class="row"><span>Total to pay</span><span>'+N(x.p+a*3)+'</span></div><p class="note">Sample fees at 10% each. Real fees are confirmed per listing.</p>'}
+else{var D=['Certificate of Occupancy','Governor\u2019s consent','Survey plan'];side='<h3>Document checks</h3>'+D.map(function(n,i){return '<div class="row"><span>'+n+'</span><span class="'+x.d[i]+'">'+(x.d[i]=='ok'?'Verified':'In review')+'</span></div>'}).join('')+'<p class="note">We do not mark a sale as fully verified until all three are confirmed.</p>'}
+var sc=SN.map(function(n,i){var v=i==0?s[0]/24:s[i]/5,l=i==0?s[0]+' hours a day':s[i]+' out of 5';return '<div class="sc"><div class="t"><span>'+n+'</span><span>'+l+'</span></div><div class="trk"><i style="width:'+Math.round(v*100)+'%"></i></div></div>'}).join('');
+app.innerHTML='<p><a href="#/search?mode='+x.mode+'">Back to results</a></p><div class="ph big" style="background:'+x.c+'">'+x.area+'<span class="stamp">Verified</span></div><div class="two"><div><h1 style="font-size:34px;margin-top:6px">'+x.t+'</h1><p class="meta">'+x.area+', '+x.city+'. '+x.bed+' bed, '+x.bath+' bath.</p><div class="price" style="font-size:30px">'+N(x.p)+(rent?' <small>per year</small>':'')+'</div>'+
+'<div class="panel" style="margin-top:18px"><h3>How the area lives</h3>'+sc+'<div class="sc"><div class="t"><span>Commute at rush hour</span><span>'+s[4]+' minutes to the city centre</span></div></div></div></div>'+
+'<div><div class="panel">'+side+'</div><div class="panel" style="margin-top:16px"><h3>Listed by</h3><a href="#/agent/'+ag(x).id+'"><b>'+ag(x).name+'</b></a><div class="meta">'+ag(x).rt+' from '+ag(x).rv+' reviews. Verified agent in '+ag(x).city+'.</div></div><div class="panel" style="margin-top:16px"><h3>Next step</h3><a class="btn y" style="display:block;text-align:center" href="https://wa.me/2340000000000?text='+encodeURIComponent('Hi, I am interested in the '+x.t+' in '+x.area)+'">Chat on WhatsApp</a><button class="btn o" id="bk" style="width:100%;margin-top:10px">Book an inspection</button><div id="bm"></div></div></div></div>';
+document.getElementById('bk').onclick=function(){document.getElementById('bm').innerHTML='<div class="msg"><label for="bd">Pick a day</label><input id="bd" type="date"><button class="btn" id="bc" style="margin-top:10px;width:100%">Confirm inspection</button></div>';document.getElementById('bc').onclick=function(){var d=document.getElementById('bd').value;if(!d){toast('Choose a day first.');return}document.getElementById('bm').innerHTML='<div class="msg ok">Inspection requested for '+d+'. The agent will confirm on WhatsApp.</div>'}}}
+var PH=[];
+function listForm(){
+if(!USER){NEXT='#/list';location.hash='#/signin';return}
+PH=[];var $=function(i){return document.getElementById(i)};
+app.innerHTML='<p><a href="#/">Back to home</a></p><h2 style="margin-top:10px">List a property</h2><p class="meta">Tell us about the property. Our team inspects it before it goes live with the Verified stamp.</p><div class="panel" style="margin-top:14px"><h3>Property details</h3><div class="fgrid"><div><label for="lm">Listing type</label><select id="lm"><option value="rent">For rent</option><option value="sale">For sale</option></select></div><div><label for="lc">City</label><select id="lc"><option>Lagos</option><option>Abuja</option></select></div><div><label for="la">Area</label><input id="la" placeholder="For example, Lekki Phase 1"></div><div><label for="lt">Title</label><input id="lt" placeholder="3 bedroom flat"></div><div><label for="lp" id="lpl">Rent per year (\u20A6)</label><input id="lp" type="number" inputmode="numeric"></div><div><label for="lb">Bedrooms</label><input id="lb" type="number" min="0" inputmode="numeric"></div><div><label for="lh">Bathrooms</label><input id="lh" type="number" min="0" inputmode="numeric"></div></div><div style="margin-top:14px"><label for="ld">Description</label><textarea id="ld" rows="4" placeholder="Power supply, water source, security, nearby roads and landmarks"></textarea></div></div>'+
+'<div class="panel" style="margin-top:16px"><h3>Owner contact</h3><div class="fgrid"><div><label for="ln">Full name</label><input id="ln"></div><div><label for="lw">WhatsApp number</label><input id="lw" type="tel" placeholder="0803 000 0000"></div></div></div>'+
+'<div class="panel" style="margin-top:16px"><h3>Property photos</h3><p class="meta" style="margin:0 0 12px">Add clear photos of every room and the outside. Up to 15 photos, and the first one is the cover.</p><label class="drop" for="lf" id="dz" tabindex="0"><b>Choose photos</b><br><span class="meta">JPG or PNG, up to 5 MB each. At least 3 photos.</span></label><input id="lf" type="file" accept="image/*" multiple hidden><div class="thumbs" id="th"></div></div>'+
+'<div style="margin-top:18px"><button class="btn y" id="ls">Submit for verification</button></div><div id="lr"></div>';
+var show=function(c,t){var m=document.createElement('div');m.className='msg '+c;m.textContent=t;$('lr').innerHTML='';$('lr').appendChild(m)};
+var draw=function(){$('th').innerHTML=PH.map(function(s,i){return '<div><img src="'+s+'" alt="Property photo '+(i+1)+'">'+(i==0?'<span class="cv">Cover</span>':'')+'<button data-i="'+i+'" aria-label="Remove photo '+(i+1)+'">Remove</button></div>'}).join('')};
+$('lm').onchange=function(){$('lpl').textContent=($('lm').value=='rent'?'Rent per year':'Sale price')+' (\u20A6)'};
+$('dz').onkeydown=function(e){if(e.key=='Enter'||e.key==' '){e.preventDefault();$('lf').click()}};
+$('lf').onchange=function(){var bad=0;Array.prototype.slice.call($('lf').files).forEach(function(f){if(PH.length>=15||f.size>5242880||f.type.indexOf('image/')!=0){bad++;return}var r=new FileReader();r.onload=function(){if(PH.length<15){PH.push(r.result);draw()}};r.readAsDataURL(f)});if(bad)toast(bad+' file(s) skipped. Photos must be images under 5 MB, 15 at most.');$('lf').value=''};
+$('th').onclick=function(e){var i=e.target.getAttribute('data-i');if(i!==null){PH.splice(+i,1);draw()}};
+$('ls').onclick=function(){var miss=['la','lt','lp','lb','ln','lw'].filter(function(k){return !$(k).value.trim()});if(miss.length){$(miss[0]).focus();show('wait','Complete the area, title, price, bedrooms, owner name and WhatsApp number.');return}if(PH.length<3){show('wait','Add at least 3 photos so renters and buyers can see the property.');return}OWN.unshift({id:'n'+Date.now(),t:$('lt').value.trim(),area:$('la').value.trim(),city:$('lc').value,p:+$('lp').value,mode:$('lm').value,ph:PH.length,st:'review',inq:0});show('ok','Submitted. Your listing is in review. Our team will inspect it and confirm on WhatsApp before it goes live.');var ga=document.createElement('a');ga.href='#/dashboard';ga.className='btn o s';ga.textContent='Go to my listings';ga.style.marginTop='10px';$('lr').appendChild(ga)}}
+var USER=null,NEXT='',AM='in';
+var OWN=[{id:1,t:'2 bedroom flat',area:'Yaba',city:'Lagos',p:3500000,mode:'rent',ph:8,st:'live',inq:12},{id:'a2',t:'3 bedroom duplex',area:'Lekki Phase 1',city:'Lagos',p:9000000,mode:'rent',ph:6,st:'review',inq:0},{id:'a3',t:'Detached house',area:'Gwarinpa',city:'Abuja',p:95000000,mode:'sale',ph:2,st:'changes',inq:0,note:'Add at least 3 photos.'}];
+var SL={live:'Live',review:'In review',changes:'Needs changes',closed:'Closed'};
+function signin(){
+var $=function(i){return document.getElementById(i)};
+app.innerHTML='<div class="authbox"><div class="tog" role="group" aria-label="Account"><button aria-pressed="'+(AM=='in')+'" id="ti">Sign in</button><button aria-pressed="'+(AM=='up')+'" id="tu">Create account</button></div><h2 style="font-size:26px;margin:18px 0 12px">'+(AM=='in'?'Welcome back':'Create your owner account')+'</h2>'+(AM=='up'?'<div style="margin-bottom:12px"><label for="an">Full name</label><input id="an" autocomplete="name"></div>':'')+'<div style="margin-bottom:12px"><label for="ae">Email or phone number</label><input id="ae" autocomplete="username"></div><div style="margin-bottom:14px"><label for="ap">Password</label><input id="ap" type="password" autocomplete="'+(AM=='in'?'current-password':'new-password')+'"></div><button class="btn y" id="ag" style="width:100%">'+(AM=='in'?'Sign in':'Create account')+'</button><div id="ar"></div><p class="note">Demo only. Accounts are not saved until we connect the database.</p></div>';
+$('ti').onclick=function(){AM='in';signin()};$('tu').onclick=function(){AM='up';signin()};
+$('ag').onclick=function(){var e=$('ae').value.trim(),p=$('ap').value,n=AM=='up'?$('an').value.trim():'',m=$('ar');m.innerHTML='';var bad=!e?'Enter your email or phone number.':(AM=='up'&&!n)?'Enter your full name.':p.length<6?'Use a password with at least 6 characters.':'';if(bad){var d=document.createElement('div');d.className='msg wait';d.textContent=bad;m.appendChild(d);return}USER={name:n||e};var nx=NEXT||'#/dashboard';NEXT='';location.hash=nx}}
+function dash(){
+if(!USER){NEXT='#/dashboard';location.hash='#/signin';return}
+var $=function(i){return document.getElementById(i)},c=function(s){return OWN.filter(function(x){return x.st==s}).length},inq=OWN.reduce(function(a,x){return a+x.inq},0),esc=function(s){return String(s).replace(/[&<>"]/g,function(k){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[k]})};
+var row=function(x){var id='data-id="'+x.id+'"';return '<div class="lr"><div><b>'+esc(x.t)+'</b><div class="meta">'+esc(x.area)+', '+x.city+'. '+N(x.p)+(x.mode=='rent'?' per year':'')+'. '+x.ph+' photos.</div>'+(x.note?'<div class="meta">'+esc(x.note)+'</div>':'')+'</div><div><span class="badge '+x.st+'">'+SL[x.st]+'</span><div class="meta">'+x.inq+' inquiries</div></div><div class="acts">'+(x.st=='live'?'<a class="btn o s" href="#/listing/'+x.id+'">View</a>':'')+'<button class="btn o s" data-a="edit" '+id+'>Edit</button>'+(x.st=='live'?'<button class="btn o s" data-a="close" '+id+'>'+(x.mode=='rent'?'Mark as rented':'Mark as sold')+'</button>':'')+'<button class="btn o s" data-a="del" '+id+'>Remove</button></div></div>'};
+app.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:26px"><h1 style="font-size:32px" id="gh"></h1><div class="acts"><a class="btn y" href="#/list">List a property</a><button class="btn o" id="so">Sign out</button></div></div><div class="stats"><div><b>'+c('live')+'</b>Live</div><div><b>'+c('review')+'</b>In review</div><div><b>'+c('changes')+'</b>Needs changes</div><div><b>'+inq+'</b>Inquiries</div></div><h2 style="font-size:22px;margin:22px 0 12px">Your listings</h2><div id="ll"></div>';
+$('gh').textContent='Hello, '+USER.name.split(' ')[0];
+$('so').onclick=function(){USER=null;location.hash='#/';toast('You have signed out.')};
+$('ll').innerHTML=OWN.length?OWN.map(row).join(''):'<div class="empty">You have no listings yet. List your first property and our team will inspect it.</div>';
+$('ll').onclick=function(e){var b=e.target,a=b.getAttribute('data-a');if(!a)return;var i=OWN.findIndex(function(x){return String(x.id)==b.getAttribute('data-id')});if(i<0)return;if(a=='edit'){toast('Editing will reopen the listing form once the database is connected.');return}if(a=='close'){OWN[i].st='closed';dash();return}if(b.getAttribute('data-armed')){OWN.splice(i,1);dash()}else{b.setAttribute('data-armed','1');b.textContent='Tap again to remove'}}}
+var AG=[
+{id:1,name:'Adaeze Okafor',city:'Lagos',areas:'Lekki, Yaba and Victoria Island',yrs:9,rt:'4.9',rv:46,deals:63,bio:'I help families and young professionals find rentals across Lagos Island and the Mainland. I walk through every home before I list it.',rev:[['Tolu','Tenant','Showed me three flats in one afternoon and the costs matched what she quoted.'],['Emeka','Buyer','Clear about the documents from the first call.']]},
+{id:2,name:'Musa Ibrahim',city:'Abuja',areas:'Wuse, Jabi and Maitama',yrs:12,rt:'4.8',rv:52,deals:78,bio:'I work with buyers and landlords in central Abuja. I explain every fee and paper before anyone pays.',rev:[['Hauwa','Tenant','Honest about the power situation in the estate.'],['Chinedu','Buyer','Helped me check the title before I paid a kobo.']]},
+{id:3,name:'Tunde Balogun',city:'Lagos',areas:'Ikeja, Maryland and Surulere',yrs:6,rt:'4.7',rv:31,deals:40,bio:'I focus on affordable family homes on the Mainland, close to good roads and schools.',rev:[['Bisi','Tenant','Replied fast and arranged the inspection the same day.'],['Segun','Landlord','My flat was rented in two weeks.']]},
+{id:4,name:'Ngozi Eze',city:'Abuja',areas:'Gwarinpa, Kubwa and Lugbe',yrs:7,rt:'4.8',rv:38,deals:47,bio:'I specialise in family houses in the Abuja suburbs, from first rentals to detached homes for sale.',rev:[['Amina','Tenant','No hidden charges, everything was written down.'],['Obinna','Buyer','Patient and well prepared for every viewing.']]}];
+function ag(x){var f=AG.filter(function(a){return a.city==x.city});return f[x.id%f.length]}
+function ini(n){return n.split(' ').map(function(w){return w[0]}).join('')}
+function agents(){var o=params(),c=o.city||'';
+app.innerHTML='<h2>Verified agents</h2><p class="meta" style="max-width:36em">Every agent here has had their identity, phone number and registration checked by our team.</p><div style="margin:14px 0;max-width:240px"><label for="ac">City</label><select id="ac"><option value="">Lagos and Abuja</option><option'+(c=='Lagos'?' selected':'')+'>Lagos</option><option'+(c=='Abuja'?' selected':'')+'>Abuja</option></select></div><div class="grid">'+AG.filter(function(a){return !c||a.city==c}).map(function(a){return '<a class="acard" href="#/agent/'+a.id+'"><span class="av">'+ini(a.name)+'</span><span><b>'+a.name+'</b><br><span class="meta">'+a.city+': '+a.areas+'</span><br><span class="meta">'+a.rt+' from '+a.rv+' reviews</span></span></a>'}).join('')+'</div>';
+document.getElementById('ac').onchange=function(){location.hash='#/agents'+(this.value?'?city='+this.value:'')}}
+function agent(id){var a=AG.filter(function(x){return x.id==id})[0];if(!a){location.hash='#/agents';return}
+var ls=L.filter(function(x){return ag(x).id==a.id});
+app.innerHTML='<p><a href="#/agents">Back to agents</a></p><div class="ahead"><span class="av big">'+ini(a.name)+'</span><div><h1 style="font-size:34px">'+a.name+'</h1><div class="meta">Verified agent in '+a.city+', '+a.yrs+' years in property</div></div></div><div class="stats"><div><b>'+a.rt+'</b>Rating</div><div><b>'+a.rv+'</b>Reviews</div><div><b>'+a.deals+'</b>Deals closed</div><div><b>'+a.yrs+'</b>Years</div></div><div class="two"><div><div class="panel"><h3>About</h3><p style="margin:0">'+a.bio+'</p><p class="meta" style="margin:10px 0 0">Areas: '+a.areas+'.</p></div><div class="panel" style="margin-top:16px"><h3>Reviews</h3>'+a.rev.map(function(r){return '<div class="rev"><b>'+r[0]+'</b> <span class="meta">'+r[1]+'</span><div>'+r[2]+'</div></div>'}).join('')+'</div></div><div><div class="panel"><h3>What we checked</h3><div class="row"><span>Identity</span><span class="ok">Confirmed</span></div><div class="row"><span>Phone number</span><span class="ok">Confirmed</span></div><div class="row"><span>Professional registration</span><span class="ok">Checked</span></div><div class="row"><span>Complaints upheld</span><span class="ok">None</span></div></div><div class="panel" style="margin-top:16px"><a class="btn y" style="display:block;text-align:center" href="https://wa.me/2340000000000?text='+encodeURIComponent('Hi '+a.name+', I found you on Pillow.')+'">Chat on WhatsApp</a></div></div></div><h2>Listings by '+a.name.split(' ')[0]+'</h2>'+(ls.length?'<div class="grid">'+ls.map(card).join('')+'</div>':'<div class="empty">No active listings right now.</div>')+'<p class="note">Agents and reviews on this page are sample data.</p>'}
+var AT='l',AF='pending';
+var ML=[{id:'p1',t:'3 bedroom flat',area:'Surulere',city:'Lagos',p:4200000,mode:'rent',owner:'Kunle Adeyemi',ph:7,st:'pending',ck:[]},{id:'p2',t:'4 bedroom duplex',area:'Maitama',city:'Abuja',p:210000000,mode:'sale',owner:'Aisha Bello',ph:9,st:'pending',ck:[]},{id:'p3',t:'Self-contained room',area:'Yaba',city:'Lagos',p:1200000,mode:'rent',owner:'Femi Ojo',ph:4,st:'pending',ck:[]},{id:'p4',t:'2 bedroom flat',area:'Wuse 2',city:'Abuja',p:5000000,mode:'rent',owner:'Halima Sani',ph:8,st:'verified',ck:[true,true,true]}];
+var MA=[{id:'g1',name:'Bola Adebayo',city:'Lagos',yrs:5,st:'pending',ck:[]},{id:'g2',name:'Yusuf Danjuma',city:'Abuja',yrs:8,st:'pending',ck:[]}];
+var LCK=['Owner ID confirmed','Property visited in person','Photos match the property'],SCK='Title documents checked: C of O, consent and survey plan',ACK=['Identity confirmed','Phone number confirmed','Professional registration checked'];
+var RSL=['Photos do not match the property','Owner could not be confirmed','Documents missing or unclear','Price or details need correcting'],RSA=['Identity could not be confirmed','Registration could not be checked','Phone number could not be confirmed'];
+function admin(){
+var $=function(i){return document.getElementById(i)},ls=AT=='l'?ML:MA,isL=AT=='l';
+var cks=function(x){return isL?(x.mode=='sale'?LCK.concat(SCK):LCK):ACK};
+var done=function(x){return cks(x).every(function(_,i){return x.ck[i]})};
+var n=function(s){return ls.filter(function(x){return x.st==s}).length};
+var find=function(id){return ls.filter(function(x){return String(x.id)==String(id)})[0]};
+var arow=function(x){var c=cks(x),id='data-id="'+x.id+'"',info=isL?'<b>'+x.t+'</b><div class="meta">'+x.area+', '+x.city+'. '+N(x.p)+(x.mode=='rent'?' per year':'')+'</div><div class="meta">Owner: '+x.owner+'. '+x.ph+' photos.</div>':'<b>'+x.name+'</b><div class="meta">'+x.city+'. '+x.yrs+' years in property.</div>',mid,act;
+if(x.st=='pending'){mid='<div>'+c.map(function(t,i){return '<label class="cb"><input type="checkbox" data-i="'+i+'" '+id+(x.ck[i]?' checked':'')+'> '+t+'</label>'}).join('')+'</div>';
+act=x.rj?'<select aria-label="Reason">'+(isL?RSL:RSA).map(function(r){return '<option>'+r+'</option>'}).join('')+'</select><button class="btn s" data-a="rj" '+id+'>Confirm</button><button class="btn o s" data-a="cancel" '+id+'>Cancel</button>':'<button class="btn s" data-a="ok" '+id+(done(x)?'':' disabled')+'>Approve</button><button class="btn o s" data-a="no" '+id+'>'+(isL?'Send back':'Reject')+'</button>'}
+else{mid='<div><span class="badge '+(x.st=='verified'?'live':'changes')+'">'+(x.st=='verified'?'Verified':(isL?'Sent back':'Rejected'))+'</span>'+(x.note?'<div class="meta">'+x.note+'</div>':'')+'</div>';act='<button class="btn o s" data-a="undo" '+id+'>Move back to waiting</button>'}
+return '<div class="lr adm"><div>'+info+'</div>'+mid+'<div class="acts">'+act+'</div></div>'};
+var shown=ls.filter(function(x){return x.st==AF});
+app.innerHTML='<h1 style="font-size:32px;margin-top:26px">Admin</h1><p class="meta" style="max-width:40em">Tick each check you completed, then approve. Demo only: this page will be limited to your team once sign-in is connected.</p><div class="tog" role="group" aria-label="Review queue"><button id="tl" aria-pressed="'+isL+'">Listings</button><button id="tg" aria-pressed="'+!isL+'">Agents</button></div><div class="stats"><div><b>'+n('pending')+'</b>Waiting for review</div><div><b>'+n('verified')+'</b>Verified</div><div><b>'+n('rejected')+'</b>'+(isL?'Sent back':'Rejected')+'</div></div><div style="max-width:260px;margin-bottom:14px"><label for="af">Show</label><select id="af"><option value="pending"'+(AF=='pending'?' selected':'')+'>Waiting for review</option><option value="verified"'+(AF=='verified'?' selected':'')+'>Verified</option><option value="rejected"'+(AF=='rejected'?' selected':'')+'>'+(isL?'Sent back':'Rejected')+'</option></select></div><div id="am">'+(shown.length?shown.map(arow).join(''):'<div class="empty">Nothing here. New submissions will appear in Waiting for review.</div>')+'</div>';
+$('tl').onclick=function(){AT='l';AF='pending';admin()};$('tg').onclick=function(){AT='a';AF='pending';admin()};
+$('af').onchange=function(){AF=this.value;admin()};
+$('am').onchange=function(e){var t=e.target;if(t.type!='checkbox')return;var x=find(t.getAttribute('data-id'));if(!x)return;x.ck[+t.getAttribute('data-i')]=t.checked;var b=t.closest('.lr').querySelector('[data-a=ok]');if(b)b.disabled=!done(x)};
+$('am').onclick=function(e){var b=e.target,a=b.getAttribute('data-a');if(!a)return;var x=find(b.getAttribute('data-id'));if(!x)return;
+if(a=='ok'){x.st='verified';x.note='';toast('Approved. It goes live on the site once the database is connected.');admin()}
+else if(a=='no'){x.rj=true;admin()}
+else if(a=='cancel'){x.rj=false;admin()}
+else if(a=='rj'){x.note=b.closest('.lr').querySelector('select').value;x.st='rejected';x.rj=false;admin()}
+else if(a=='undo'){x.st='pending';x.note='';admin()}}}
+function route(){window.scrollTo(0,0);var ac=document.getElementById('acct');ac.textContent=USER?'My listings':'Sign in';ac.href=USER?'#/dashboard':'#/signin';var h=location.hash||'#/';if(h.indexOf('#/search')==0)search();else if(h.indexOf('#/listing/')==0)detail(h.split('/')[2]);else if(h=='#/list')listForm();else if(h=='#/signin')signin();else if(h=='#/admin')admin();else if(h.indexOf('#/agents')==0)agents();else if(h.indexOf('#/agent/')==0)agent(h.split('/')[2]);else if(h=='#/dashboard')dash();else home()}
+addEventListener('hashchange',route);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+var sb=supabase.createClient('https://pnxxvosxevabexjaofps.supabase.co','sb_publishable_LXNdRVlx-i77oXzCm91Zqg_OQVJwQ7D');
+var g=function(i){return document.getElementById(i)};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(k){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[k]})};
+var one=function(x){return Array.isArray(x)?x[0]:x};
+var COL=['#1E7B4A','#2F8F5B','#176B45','#3A8A63','#14603B','#2A7A55'];
+var ST={pending:'review',verified:'live',changes_requested:'changes',closed:'closed'};
+var pub=function(p){return sb.storage.from('listing-photos').getPublicUrl(p).data.publicUrl};
+var ero=function(e){toast((e&&e.message)||'Something went wrong. Try again.')};
+var RJ=null,FILES=[];
+L=[];OWN=[];
+
+async function setUser(s){
+ if(!s){USER=null;return}
+ USER={id:s.user.id,name:(s.user.user_metadata&&s.user.user_metadata.full_name)||s.user.email,role:'owner'};
+ var r=await sb.from('profiles').select('role,full_name').eq('id',s.user.id).maybeSingle();
+ if(r.data){USER.role=r.data.role;if(r.data.full_name)USER.name=r.data.full_name}
+}
+async function loadPublic(){
+ var a=await sb.from('listings').select('*,listing_photos(storage_path,position)').eq('status','verified').order('created_at',{ascending:false});
+ var n=await sb.from('neighborhood_scores').select('*');
+ if(a.error){L=[];return}
+ var sc={};(n.data||[]).forEach(function(r){sc[r.city+'|'+r.area]=r});
+ L=a.data.map(function(r,i){
+  var ph=(r.listing_photos||[]).sort(function(x,y){return x.position-y.position}).map(function(p){return pub(p.storage_path)}),q=sc[r.city+'|'+r.area];
+  return {id:r.id,dbl:true,mode:r.mode,city:r.city,area:esc(r.area),t:esc(r.title),desc:r.description,p:r.price_ngn,bed:r.bedrooms,bath:r.bathrooms||0,c:COL[(r.title.length+i)%6],cover:ph[0],photos:ph,s:q?[q.power_hours,q.water_score,q.flood_safety,q.security_score,q.commute_minutes]:[0,0,0,0,0],ns:!q,d:['ok','ok','ok']};
+ });
+}
+
+/* public pages */
+card=function(x){return '<a class="card" href="#/listing/'+x.id+'"><div class="ph" style="background:'+x.c+(x.cover?' center/cover url(\''+x.cover+'\')':'')+'">'+x.area+'<span class="stamp">Verified</span></div><div class="in"><div class="price">'+N(x.p)+(x.mode=='rent'?' <small>per year</small>':'')+'</div><div>'+x.t+'</div><div class="meta">'+x.bed+' bed, '+x.bath+' bath, '+x.area+', '+x.city+'</div></div></a>'};
+var _ag=ag;ag=function(x){return x.dbl?{id:0,name:'',rt:'',rv:0,city:x.city}:_ag(x)};
+var _home=home;home=function(){_home();if(!L.length){var gr=document.querySelector('.grid');if(gr)gr.outerHTML='<div class="empty">No verified homes yet. The first listings appear here once our team has inspected them.</div>'}};
+var _detail=detail;
+detail=function(id){
+ _detail(id);
+ var x=L.filter(function(y){return y.id==id})[0];if(!x)return;
+ var big=document.querySelector('.ph.big');
+ if(x.cover&&big){big.style.background='center/cover url(\''+x.cover+'\')';if(x.photos.length>1)big.insertAdjacentHTML('afterend','<div class="thumbs">'+x.photos.slice(1).map(function(u){return '<div><img src="'+u+'" alt="Property photo"></div>'}).join('')+'</div>')}
+ document.querySelectorAll('.panel').forEach(function(p){var h=p.querySelector('h3');if(!h)return;if(h.textContent=='Listed by')p.remove();else if(h.textContent=='How the area lives'&&x.ns)p.innerHTML='<h3>How the area lives</h3><p class="meta" style="margin:0">Area scores for '+x.area+' are coming soon.</p>'});
+ if(x.desc){var col=document.querySelector('.two > div'),d=document.createElement('div');d.className='panel';d.style.marginTop='18px';d.innerHTML='<h3>About this home</h3><p style="margin:0;white-space:pre-line"></p>';d.querySelector('p').textContent=x.desc;col.appendChild(d)}
+};
+
+/* sign in and create account */
+signin=function(){
+ var up=AM=='up',say=function(c,t){var m=document.createElement('div');m.className='msg '+c;m.textContent=t;g('ar').innerHTML='';g('ar').appendChild(m)};
+ app.innerHTML='<div class="authbox"><div class="tog" role="group" aria-label="Account"><button aria-pressed="'+!up+'" id="ti">Sign in</button><button aria-pressed="'+up+'" id="tu">Create account</button></div><h2 style="font-size:26px;margin:18px 0 12px">'+(up?'Create your owner account':'Welcome back')+'</h2>'+(up?'<div style="margin-bottom:12px"><label for="an">Full name</label><input id="an" autocomplete="name"></div>':'')+'<div style="margin-bottom:12px"><label for="ae">Email</label><input id="ae" type="email" autocomplete="username"></div><div style="margin-bottom:14px"><label for="ap">Password</label><input id="ap" type="password" autocomplete="'+(up?'new-password':'current-password')+'"></div><button class="btn y" id="ag" style="width:100%">'+(up?'Create account':'Sign in')+'</button><div id="ar"></div></div>';
+ g('ti').onclick=function(){AM='in';signin()};g('tu').onclick=function(){AM='up';signin()};
+ g('ag').onclick=async function(){
+  var e=g('ae').value.trim(),p=g('ap').value,n=up?g('an').value.trim():'';
+  var bad=!e?'Enter your email.':(up&&!n)?'Enter your full name.':p.length<6?'Use a password with at least 6 characters.':'';
+  if(bad){say('wait',bad);return}
+  g('ag').disabled=true;
+  var r=up?await sb.auth.signUp({email:e,password:p,options:{data:{full_name:n}}}):await sb.auth.signInWithPassword({email:e,password:p});
+  g('ag').disabled=false;
+  if(r.error){say('wait',r.error.message);return}
+  if(!r.data.session){say('ok','Check your email to confirm your account, then sign in.');return}
+  await setUser(r.data.session);
+  var nx=NEXT||'#/dashboard';NEXT='';
+  if(location.hash==nx)route();else location.hash=nx;
+ };
+};
+
+/* list a property */
+var _lf=listForm;
+listForm=function(){
+ _lf();if(!USER)return;FILES=[];
+ var draw=function(){g('th').innerHTML=FILES.map(function(f,i){return '<div><img src="'+f.u+'" alt="Property photo '+(i+1)+'">'+(i==0?'<span class="cv">Cover</span>':'')+'<button data-i="'+i+'" aria-label="Remove photo '+(i+1)+'">Remove</button></div>'}).join('')};
+ var m=function(c,t){var d=document.createElement('div');d.className='msg '+c;d.textContent=t;g('lr').innerHTML='';g('lr').appendChild(d)};
+ g('lf').onchange=function(){var bad=0;Array.prototype.slice.call(g('lf').files).forEach(function(f){if(FILES.length>=15||f.size>5242880||f.type.indexOf('image/')!=0){bad++;return}FILES.push({f:f,u:URL.createObjectURL(f)})});if(bad)toast(bad+' file(s) skipped. Photos must be images under 5 MB, 15 at most.');g('lf').value='';draw()};
+ g('th').onclick=function(e){var i=e.target.getAttribute('data-i');if(i!==null){URL.revokeObjectURL(FILES[+i].u);FILES.splice(+i,1);draw()}};
+ g('ls').onclick=async function(){
+  var miss=['la','lt','lp','lb','ln','lw'].filter(function(k){return !g(k).value.trim()});
+  if(miss.length){g(miss[0]).focus();m('wait','Complete the area, title, price, bedrooms, owner name and WhatsApp number.');return}
+  var ph=g('lw').value.replace(/\s/g,'');
+  if(ph.length<10||ph.length>16){g('lw').focus();m('wait','Enter a valid WhatsApp number.');return}
+  if(FILES.length<3){m('wait','Add at least 3 photos so renters and buyers can see the property.');return}
+  var b=g('ls');b.disabled=true;b.textContent='Submitting';
+  try{
+   var pr=await sb.from('profiles').update({full_name:g('ln').value.trim(),phone:ph}).eq('id',USER.id);if(pr.error)throw pr.error;
+   var r=await sb.from('listings').insert({owner_id:USER.id,mode:g('lm').value,city:g('lc').value,area:g('la').value.trim(),title:g('lt').value.trim(),description:g('ld').value.trim()||null,price_ngn:Math.round(+g('lp').value),bedrooms:+g('lb').value,bathrooms:g('lh').value?+g('lh').value:null,status:'pending'}).select('id').single();
+   if(r.error)throw r.error;
+   var rows=[];
+   for(var i=0;i<FILES.length;i++){var f=FILES[i].f,path=USER.id+'/'+r.data.id+'/'+i+'-'+Date.now()+'.'+(f.type.split('/')[1]||'jpg').replace('jpeg','jpg');var u=await sb.storage.from('listing-photos').upload(path,f,{contentType:f.type});if(u.error)throw u.error;rows.push({listing_id:r.data.id,storage_path:path,position:i})}
+   var pp=await sb.from('listing_photos').insert(rows);if(pp.error)throw pp.error;
+   m('ok','Submitted. Your listing is in review. Our team will inspect it and confirm on WhatsApp before it goes live.');
+   var a=document.createElement('a');a.href='#/dashboard';a.className='btn o s';a.textContent='Go to my listings';a.style.marginTop='10px';g('lr').appendChild(a);
+  }catch(e){m('wait',(e&&e.message)||'Could not submit. Try again.')}
+  b.disabled=false;b.textContent='Submit for verification';
+ };
+};
+
+/* owner dashboard */
+var _dash=dash;
+dash=async function(){
+ if(!USER){NEXT='#/dashboard';location.hash='#/signin';return}
+ var r=await sb.from('listings').select('*,listing_photos(count),inquiries(count)').eq('owner_id',USER.id).order('created_at',{ascending:false});
+ if(r.error){ero(r.error);return}
+ OWN=r.data.map(function(x){return {id:x.id,t:x.title,area:x.area,city:x.city,p:x.price_ngn,mode:x.mode,ph:(one(x.listing_photos)||{}).count||0,st:ST[x.status],inq:(one(x.inquiries)||{}).count||0,note:x.review_note||''}});
+ _dash();
+ g('so').onclick=async function(){await sb.auth.signOut();USER=null;location.hash='#/';toast('You have signed out.')};
+ g('ll').onclick=async function(e){
+  var b=e.target,a=b.getAttribute('data-a');if(!a)return;var id=b.getAttribute('data-id');
+  if(a=='edit'){toast('Editing is coming soon.');return}
+  if(a=='close'){var u=await sb.from('listings').update({status:'closed'}).eq('id',id);if(u.error){ero(u.error);return}dash();return}
+  if(b.getAttribute('data-armed')){var d=await sb.from('listings').delete().eq('id',id);if(d.error){ero(d.error);return}dash()}
+  else{b.setAttribute('data-armed','1');b.textContent='Tap again to remove'}
+ };
+};
+
+/* admin */
+var _admin=admin;
+admin=async function(){
+ if(!USER||USER.role!='admin'){app.innerHTML='<div class="empty" style="margin-top:30px">This page is for the Pillow team. Sign in with an admin account.</div>';return}
+ AT='l';
+ var r=await sb.from('listings').select('*,owner:profiles!listings_owner_id_fkey(full_name),listing_photos(count),listing_checks(*)').neq('status','closed').order('created_at',{ascending:false});
+ if(r.error){ero(r.error);return}
+ ML=r.data.map(function(x){var c=one(x.listing_checks)||{};return {id:x.id,t:esc(x.title),area:esc(x.area),city:x.city,p:x.price_ngn,mode:x.mode,owner:esc((one(x.owner)||{}).full_name||'Owner'),ph:(one(x.listing_photos)||{}).count||0,st:x.status=='pending'?'pending':x.status=='verified'?'verified':'rejected',note:esc(x.review_note||''),rj:RJ===x.id,ck:[!!c.owner_id_confirmed,!!c.property_visited,!!c.photos_match,!!c.documents_checked]}});
+ _admin();
+ g('tg').remove();
+ var intro=document.querySelector('#app > p.meta');if(intro)intro.textContent='Tick each check you completed, then approve.';
+ var find=function(id){return ML.filter(function(x){return String(x.id)==id})[0]};
+ g('am').onchange=async function(e){
+  var t=e.target;if(t.type!='checkbox')return;var x=find(t.getAttribute('data-id')),i=+t.getAttribute('data-i');if(!x)return;
+  x.ck[i]=t.checked;
+  var u=await sb.from('listing_checks').upsert({listing_id:x.id,owner_id_confirmed:x.ck[0],property_visited:x.ck[1],photos_match:x.ck[2],documents_checked:!!x.ck[3],checked_by:USER.id});
+  if(u.error){ero(u.error);t.checked=!t.checked;x.ck[i]=t.checked;return}
+  var need=x.mode=='sale'?4:3,ok=true;for(var k=0;k<need;k++)if(!x.ck[k])ok=false;
+  var b=t.closest('.lr').querySelector('[data-a=ok]');if(b)b.disabled=!ok;
+ };
+ g('am').onclick=async function(e){
+  var b=e.target,a=b.getAttribute('data-a');if(!a)return;var x=find(b.getAttribute('data-id'));if(!x)return;
+  var set=async function(o){var u=await sb.from('listings').update(o).eq('id',x.id);if(u.error){ero(u.error);return false}return true};
+  if(a=='ok'){if(await set({status:'verified',review_note:null})){toast('Approved. The listing is live on the site.');admin()}}
+  else if(a=='no'){RJ=x.id;admin()}
+  else if(a=='cancel'){RJ=null;admin()}
+  else if(a=='rj'){var why=b.closest('.lr').querySelector('select').value;if(await set({status:'changes_requested',review_note:why})){RJ=null;admin()}}
+  else if(a=='undo'){if(await set({status:'pending',review_note:null}))admin()}
+ };
+};
+
+/* routing and start up */
+var _route=route;
+removeEventListener('hashchange',_route);
+route=async function(){
+ var h=location.hash||'#/';
+ if(h=='#/'||h.indexOf('#/search')==0||h.indexOf('#/listing/')==0||h.indexOf('#/agent')==0)await loadPublic();
+ _route();
+};
+addEventListener('hashchange',route);
+sb.auth.onAuthStateChange(function(ev){if(ev=='SIGNED_OUT'){USER=null;setTimeout(route,0)}});
+(async function(){
+ try{var s=await sb.auth.getSession();await setUser(s.data.session)}catch(e){}
+ route();
+})();
+
+</script>
+</body>
+</html>
